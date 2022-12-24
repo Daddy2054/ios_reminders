@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1039258318315",
+    "project_id": "ios-reminders-cd812",
+    "storage_bucket": "ios-reminders-cd812.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1039258318315:android:557cb740cfb93d565515ae",
+        "android_client_info": {
+          "package_name": "com.example.ios_reminders"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1039258318315-g7jee4fvt0bpmmh49d53uoeh7n57rnd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVYR6q_o9pCmnIO6fK5ofqEeRJtib8Src"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1039258318315-g7jee4fvt0bpmmh49d53uoeh7n57rnd6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1039258318315-kra9a4s71obgig5uqvmn8uoh7lvqo84g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iosReminders"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
