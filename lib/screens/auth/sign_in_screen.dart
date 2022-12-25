@@ -63,7 +63,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         obscureText: true,
                         validator: (val) => val!.length < 6
                             ? 'Enter a password of '
-                                'at least 6 chars'
+                                'at least 600 chars'
                             : null),
                     SizedBox(height: 20),
                     ElevatedButton(
