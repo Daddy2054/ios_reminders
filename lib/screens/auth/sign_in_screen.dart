@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:ios_reminders/screens/home/home_screen.dart';
+import 'package:ios_reminders/services/auth_service.dart';
 import 'package:lottie/lottie.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -63,16 +65,28 @@ class _SignInScreenState extends State<SignInScreen> {
                         obscureText: true,
                         validator: (val) => val!.length < 6
                             ? 'Enter a password of '
-                                'at least 600 chars'
+                                'at least 6 chars'
                             : null),
                     SizedBox(height: 20),
                     ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            // ignore: avoid_print
-                            print('submit form');
-                          }
-                        },
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              final user = await AuthService()
+                                  .signInWithEmailAndPassword(
+                                      email: _emailController.text,
+                                      password: _passwordController.text);
+                              if (user != null) {
+                                //navigate the user to the home screen
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeScreen(),
+                                  ),
+                                );
+                              }
+                            }
+                          },
+                
                         child: Text('Sign In'))
                   ],
                 ),
