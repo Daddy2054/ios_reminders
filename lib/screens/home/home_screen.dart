@@ -31,10 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     // var todoLists = Provider.of<TodoListCollection>(context).todoLists;
 
-    return StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
+    
             return Scaffold(
               appBar: AppBar(actions: [
                 IconButton(
@@ -89,8 +86,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               )),
             );
-          }
-          return AuthenticateScreen();
-        });
+          
   }
 }

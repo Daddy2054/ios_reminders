@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
@@ -40,39 +41,56 @@ class _AppState extends State<App> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          return ChangeNotifierProvider<TodoListCollection>(
-            create: (BuildContext context) => TodoListCollection(),
-            child: MaterialApp(
-              initialRoute: '/',
-              routes: {
-                '/': (context) => AuthenticateScreen(),
-                '/home': (context) => HomeScreen(),
-                '/addList': (context) => AddListScreen(),
-                '/addReminder': (context) => AddReminderScreen()
-              },
-              theme: ThemeData(
-                  brightness: Brightness.dark,
-                  scaffoldBackgroundColor: Colors.black,
-                  appBarTheme: AppBarTheme(backgroundColor: Colors.black),
-                  iconTheme: IconThemeData(color: Colors.white),
-                  textButtonTheme: TextButtonThemeData(
-                    style: TextButton.styleFrom(
-                      disabledForegroundColor: Colors.blueAccent,
-                      textStyle:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                  ),
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      shape: StadiumBorder(),
-                    ),
-                  ),
-                  dividerColor: Colors.grey[600]),
-            ),
+          return StreamProvider<User?>.value(
+            value: FirebaseAuth.instance.authStateChanges(),
+            initialData: FirebaseAuth.instance.currentUser,
+            child: Wrapper(),
           );
         }
         return CircularProgressIndicator();
       },
+    );
+  }
+}
+
+class Wrapper extends StatelessWidget {
+  const Wrapper({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User?>(context);
+
+    return ChangeNotifierProvider<TodoListCollection>(
+      create: (BuildContext context) => TodoListCollection(),
+      child: MaterialApp(
+            // initialRoute: '/',
+        routes: {
+          // '/': (context) => AuthenticateScreen(),
+          '/home': (context) => HomeScreen(),
+          '/addList': (context) => AddListScreen(),
+          '/addReminder': (context) => AddReminderScreen()
+        },
+        home: user != null ? HomeScreen() : AuthenticateScreen(),
+        theme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: AppBarTheme(backgroundColor: Colors.black),
+            iconTheme: IconThemeData(color: Colors.white),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                disabledForegroundColor: Colors.blueAccent,
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                shape: StadiumBorder(),
+              ),
+            ),
+            dividerColor: Colors.grey[600]),
+      ),
     );
   }
 }

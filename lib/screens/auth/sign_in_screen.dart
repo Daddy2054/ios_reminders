@@ -39,7 +39,7 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         body: SingleChildScrollView(
           child: Column(children: [
-              Lottie.asset('assets/images/calendar.json', width: 175),
+            Lottie.asset('assets/images/calendar.json', width: 175),
             Text('Yet another Todo list',
                 style: Theme.of(context).textTheme.headline6),
             Container(
@@ -47,8 +47,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                  
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     SizedBox(height: 20),
                     TextFormField(
@@ -69,24 +68,23 @@ class _SignInScreenState extends State<SignInScreen> {
                             : null),
                     SizedBox(height: 20),
                     ElevatedButton(
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              final user = await AuthService()
-                                  .signInWithEmailAndPassword(
-                                      email: _emailController.text,
-                                      password: _passwordController.text);
-                              if (user != null) {
-                                //navigate the user to the home screen
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomeScreen(),
-                                  ),
-                                );
-                              }
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            final user = await AuthService()
+                                .signInWithEmailAndPassword(
+                                    email: _emailController.text,
+                                    password: _passwordController.text);
+                            if (user != null) {
+                              //navigate the user to the home screen
+                              //   Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => HomeScreen(),
+                              //     ),
+                              //   );
                             }
-                          },
-                
+                          }
+                        },
                         child: Text('Sign In'))
                   ],
                 ),
