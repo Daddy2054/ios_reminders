@@ -45,6 +45,8 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Form(
                 key: _formKey,
                 child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                  
                   children: [
                     SizedBox(height: 20),
                     TextFormField(
