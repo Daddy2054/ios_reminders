@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class SignInScreen extends StatefulWidget {
   final VoidCallback toggleView;
@@ -36,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
         body: SingleChildScrollView(
           child: Column(children: [
-            SizedBox(height: 200),
+              Lottie.asset('assets/images/calendar.json', width: 175),
             Text('Yet another Todo list',
                 style: Theme.of(context).textTheme.headline6),
             Container(
