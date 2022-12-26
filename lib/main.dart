@@ -7,6 +7,7 @@ import 'package:ios_reminders/screens/auth/authenticate_screen.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:ios_reminders/screens/home/addList/add_list_screen.dart';
 import 'package:ios_reminders/screens/home/home_screen.dart';
+import 'package:ios_reminders/wrapper.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -53,44 +54,3 @@ class _AppState extends State<App> {
   }
 }
 
-class Wrapper extends StatelessWidget {
-  const Wrapper({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<User?>(context);
-
-    return ChangeNotifierProvider<TodoListCollection>(
-      create: (BuildContext context) => TodoListCollection(),
-      child: MaterialApp(
-            // initialRoute: '/',
-        routes: {
-          // '/': (context) => AuthenticateScreen(),
-          '/home': (context) => HomeScreen(),
-          '/addList': (context) => AddListScreen(),
-          '/addReminder': (context) => AddReminderScreen()
-        },
-        home: user != null ? HomeScreen() : AuthenticateScreen(),
-        theme: ThemeData(
-            brightness: Brightness.dark,
-            scaffoldBackgroundColor: Colors.black,
-            appBarTheme: AppBarTheme(backgroundColor: Colors.black),
-            iconTheme: IconThemeData(color: Colors.white),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                disabledForegroundColor: Colors.blueAccent,
-                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
-            ),
-            elevatedButtonTheme: ElevatedButtonThemeData(
-              style: ElevatedButton.styleFrom(
-                shape: StadiumBorder(),
-              ),
-            ),
-            dividerColor: Colors.grey[600]),
-      ),
-    );
-  }
-}

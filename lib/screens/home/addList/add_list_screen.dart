@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ios_reminders/models/common/custom_color.dart';
 import 'package:ios_reminders/models/common/custom_color_collection.dart';
@@ -46,17 +48,34 @@ class _AddListScreenState extends State<AddListScreen> {
           TextButton(
             onPressed: _listName.isEmpty
                 ? null
-                : () {
+                : () async {
                     if (_textController.text.isNotEmpty) {
-                      // print('add to database');
-                      Provider.of<TodoListCollection>(context, listen: false)
-                          .addTodoList(TodoList(
-                              id: DateTime.now().toString(),
-                              title: _textController.text,
-                              icon: {
-                            "id": _selectedIcon.id,
-                            "color": _selectedColor.id
-                          }));
+                      final user = Provider.of<User?>(context, listen: false);
+                      final todoListRef = FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .collection('todo_lists')
+                          .doc(); //id of the list
+
+                        final newTodoList = TodoList(
+                         id: todoListRef.id,
+                         title: _textController.text,
+                         icon: {
+                           "id": _selectedIcon.id,
+                           "color": _selectedColor.id
+                         },
+                         reminderCount: 0);
+                      
+                      //set the data in firebase
+                       try {
+                        await todoListRef.set(
+                          newTodoList.toJson(),
+                        );
+                        print('list added');
+                      } catch (e) {
+                        print(e);
+                      }
+ 
                       Navigator.pop(
                         context,
                       );
