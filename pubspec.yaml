@@ -41,7 +41,8 @@ dependencies:
   cloud_firestore: ^4.3.0
   firebase_auth: ^4.2.3
   lottie: ^2.1.0
-
+  intl: ^0.18.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

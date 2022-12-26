@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ios_reminders/common/widgets/category_icon.dart';
 import 'package:ios_reminders/models/category/category.dart';
 import 'package:ios_reminders/models/category/category_collection.dart';
@@ -23,6 +24,8 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
   // PASS DATA DOWN TO SEELCT LIST SCREEN
   TodoList? _selectedList;
   Category _selectedCategory = CategoryCollection().categories[0];
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
@@ -188,10 +191,101 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CategoryIcon(
-                         bgColor: _selectedCategory.icon.bgColor,
+                          bgColor: _selectedCategory.icon.bgColor,
                           iconData: _selectedCategory.icon.iconData),
-                       SizedBox(width: 10),
+                      SizedBox(width: 10),
                       Text(_selectedCategory.name),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () async {
+                    final DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(
+                        Duration(days: 365),
+                      ),
+                    );
+                    if (pickedDate != null) {
+                      print(pickedDate);
+                      setState(() {
+                        _selectedDate = pickedDate;
+                      });
+                    } else {
+                      print('no date was picked');
+                    }
+                  },
+                  leading: Text(
+                    'Date',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CategoryIcon(
+                          bgColor: Colors.red.shade300,
+                          iconData: Icons.calendar_today),
+                      SizedBox(width: 10),
+                      Text(_selectedDate != null
+                          ? DateFormat.yMMMd().format(_selectedDate!).toString()
+                          : 'Select Date'),
+                      Icon(Icons.arrow_forward_ios)
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              clipBehavior: Clip.antiAlias,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () async {
+                    final TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      print(pickedTime);
+                      setState(() {
+                        _selectedTime = pickedTime;
+                      });
+                    } else {
+                      print('no time was selected');
+                    }
+                  },
+                  leading: Text(
+                    'Time',
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CategoryIcon(
+                          bgColor: Colors.red.shade300, iconData: Icons.timer),
+                      SizedBox(width: 10),
+                      Text(_selectedTime != null
+                          ? _selectedTime!.format(context).toString()
+                          : 'Select Time'),
                       Icon(Icons.arrow_forward_ios)
                     ],
                   ),
