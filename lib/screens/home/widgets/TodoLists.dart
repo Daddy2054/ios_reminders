@@ -6,6 +6,7 @@ import 'package:ios_reminders/models/common/custom_color_collection.dart';
 import 'package:ios_reminders/models/common/custom_icon_collection.dart';
 import 'package:ios_reminders/models/todo_list/todo_list.dart';
 import 'package:ios_reminders/screens/view_list/view_list_screen.dart';
+import 'package:ios_reminders/services/database_service.dart';
 //import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
 import 'package:provider/provider.dart';
 
@@ -48,33 +49,11 @@ class TodoLists extends StatelessWidget {
                       // Provider.of<TodoListCollection>(context, listen: false)
                       //     .removeTodoList(todoLists[index]);
 
-                      WriteBatch batch = FirebaseFirestore.instance.batch();
-
-                      final todoListRef = FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid)
-                          .collection('todo_lists')
-                          .doc(todoLists[index].id);
-
-                      final reminderSnapshots = await FirebaseFirestore.instance
-                          .collection('users')
-                          .doc(user?.uid)
-                          .collection('reminders')
-                          .where('list.id', isEqualTo: todoLists[index].id)
-                          .get();
-
-                      reminderSnapshots.docs.forEach((reminder) {
-                        //delete the reminder
-                        batch.delete(reminder.reference);
-                      });
-
-                      batch.delete(todoListRef);
-
-                      try {
-                        await batch.commit();
-                        print('Deleted');
+                            try {
+                        await DatabaseService(uid: user!.uid)
+                            .deleteTodoList(todoLists[index]);
                       } catch (e) {
-                        print(e);
+                        //show the error.
                       }
                     },
 

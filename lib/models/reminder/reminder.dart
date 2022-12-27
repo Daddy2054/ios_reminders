@@ -1,5 +1,5 @@
 class Reminder {
-  final String id; // firebase id
+  String? id; // firebase id
   final String title;
   final String categoryId;
   final String? notes;

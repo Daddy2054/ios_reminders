@@ -66,4 +66,50 @@ class DatabaseService {
       rethrow;
     }
   }
+
+    Future deleteTodoList(TodoList todoList) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    final todoListRef = _userRef.collection('todo_lists').doc(todoList.id);
+
+    final reminderSnapshots = await _userRef
+        .collection('reminders')
+        .where('list.id', isEqualTo: todoList.id)
+        .get();
+
+    reminderSnapshots.docs.forEach((reminder) {
+      //delete the reminder
+      batch.delete(reminder.reference);
+    });
+
+    batch.delete(todoListRef);
+
+    try {
+      await batch.commit();
+      print('Deleted');
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+   Future addReminder({required Reminder reminder}) async {
+    var reminderRef = _userRef.collection('reminders').doc(); // reminderRef.id
+
+    reminder.id = reminderRef.id;
+
+    final listRef = _userRef.collection('todo_lists').doc(reminder.list['id']);
+
+    WriteBatch batch = _database.batch();
+
+    batch.set(reminderRef, reminder.toJson());
+    batch.update(
+        listRef, {'reminder_count': reminder.list['reminder_count'] + 1});
+    try {
+      await batch.commit();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }
