@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ios_reminders/config/custom_theme.dart';
 import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
 import 'package:ios_reminders/screens/add_reminder/add_reminder_screen.dart';
 import 'package:ios_reminders/screens/auth/authenticate_screen.dart';
@@ -42,10 +43,15 @@ class _AppState extends State<App> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          return StreamProvider<User?>(
-             create: (BuildContext context) =>
-                  FirebaseAuth.instance.authStateChanges(),
-            initialData: FirebaseAuth.instance.currentUser,
+          return MultiProvider(
+            providers: [
+              StreamProvider<User?>(
+                create: (BuildContext context) =>
+                    FirebaseAuth.instance.authStateChanges(),
+                initialData: FirebaseAuth.instance.currentUser,
+              ),
+              ChangeNotifierProvider(create: (context) => CustomTheme())
+            ],
             child: Wrapper(),
           );
         }
@@ -54,4 +60,3 @@ class _AppState extends State<App> {
     );
   }
 }
-

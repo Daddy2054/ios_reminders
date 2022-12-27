@@ -44,7 +44,7 @@ class _ListViewItemsState extends State<ListViewItems> {
                         category.toggleIsChecked();
                       });
                     },
-                    tileColor: Colors.grey[800],
+                    tileColor: Theme.of(context).cardColor,
                     leading: Container(
                       decoration: BoxDecoration(
                           color: category.isChecked

@@ -42,7 +42,7 @@ class GridViewItems extends StatelessWidget {
                   : null,
               child: Ink(
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1A191D),
+                  color: Theme.of(context).cardColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Padding(
