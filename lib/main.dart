@@ -42,8 +42,9 @@ class _AppState extends State<App> {
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          return StreamProvider<User?>.value(
-            value: FirebaseAuth.instance.authStateChanges(),
+          return StreamProvider<User?>(
+             create: (BuildContext context) =>
+                  FirebaseAuth.instance.authStateChanges(),
             initialData: FirebaseAuth.instance.currentUser,
             child: Wrapper(),
           );

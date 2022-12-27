@@ -42,20 +42,42 @@ class TodoLists extends StatelessWidget {
                 itemCount: todoLists.length,
                 itemBuilder: (context, index) {
                   return Dismissible(
-                    onDismissed: (direction) async {
+              onDismissed: (direction) async {
                       //delete the todo
-                   final todoListRef = FirebaseFirestore.instance
+                      // deleteTodoList(todoLists[index]);
+                      // Provider.of<TodoListCollection>(context, listen: false)
+                      //     .removeTodoList(todoLists[index]);
+
+                      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+                      final todoListRef = FirebaseFirestore.instance
                           .collection('users')
-                          .doc(user!.uid)
+                          .doc(user?.uid)
                           .collection('todo_lists')
                           .doc(todoLists[index].id);
+
+                      final reminderSnapshots = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user?.uid)
+                          .collection('reminders')
+                          .where('list.id', isEqualTo: todoLists[index].id)
+                          .get();
+
+                      reminderSnapshots.docs.forEach((reminder) {
+                        //delete the reminder
+                        batch.delete(reminder.reference);
+                      });
+
+                      batch.delete(todoListRef);
+
                       try {
-                        await todoListRef.delete();
+                        await batch.commit();
                         print('Deleted');
                       } catch (e) {
                         print(e);
                       }
                     },
+
                     key: UniqueKey(),
                     direction: DismissDirection.endToStart,
                     background: Container(
@@ -73,7 +95,7 @@ class TodoLists extends StatelessWidget {
                       elevation: 0,
                       margin: EdgeInsets.zero,
                       child: ListTile(
-                                 onTap: todoLists[index].reminderCount > 0
+                        onTap: todoLists[index].reminderCount > 0
                             ? () {
                                 Navigator.push(
                                   context,
