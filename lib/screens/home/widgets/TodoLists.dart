@@ -7,6 +7,8 @@ import 'package:ios_reminders/models/common/custom_icon_collection.dart';
 import 'package:ios_reminders/models/todo_list/todo_list.dart';
 import 'package:ios_reminders/screens/view_list/view_list_screen.dart';
 import 'package:ios_reminders/services/database_service.dart';
+import 'package:ios_reminders/common/helpers/helpers.dart' as helpers;
+
 //import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
 import 'package:provider/provider.dart';
 
@@ -49,11 +51,13 @@ class TodoLists extends StatelessWidget {
                       // Provider.of<TodoListCollection>(context, listen: false)
                       //     .removeTodoList(todoLists[index]);
 
-                            try {
+                                  try {
                         await DatabaseService(uid: user!.uid)
                             .deleteTodoList(todoLists[index]);
+                        helpers.showSnackBar(context, 'List Deleted');
                       } catch (e) {
                         //show the error.
+                        helpers.showSnackBar(context, 'Unable to delete List');
                       }
                     },
 

@@ -112,4 +112,23 @@ class DatabaseService {
       rethrow;
     }
   }
+
+   Future deleteReminder(Reminder reminder, TodoList todoListForReminder) async {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    final remindersRef = _userRef.collection('reminders').doc(reminder.id);
+
+    final listRef = _userRef.collection('todo_lists').doc(reminder.list['id']);
+
+    batch.delete(remindersRef);
+    batch.update(
+        listRef, {'reminder_count': todoListForReminder.reminderCount - 1});
+
+    try {
+      await batch.commit();
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
 }

@@ -8,6 +8,8 @@ import 'package:ios_reminders/models/common/custom_icon_collection.dart';
 import 'package:ios_reminders/models/todo_list/todo_list.dart';
 import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
 import 'package:ios_reminders/services/database_service.dart';
+import 'package:ios_reminders/common/helpers/helpers.dart' as helpers;
+
 import 'package:provider/provider.dart';
 
 class AddListScreen extends StatefulWidget {
@@ -68,11 +70,13 @@ class _AddListScreenState extends State<AddListScreen> {
                          reminderCount: 0);
                       
                       //set the data in firebase
-                    try {
+                   try {
                         DatabaseService(uid: user!.uid)
                             .addTodoList(todoList: newTodoList);
+                        helpers.showSnackBar(context, 'List Added');
                       } catch (e) {
                         //show the error
+                        helpers.showSnackBar(context, 'Unable To add list');
                       }
  
                       Navigator.pop(

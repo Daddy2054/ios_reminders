@@ -6,6 +6,7 @@ import 'package:ios_reminders/models/category/category.dart';
 import 'package:ios_reminders/models/reminder/reminder.dart';
 import 'package:ios_reminders/common/helpers/helpers.dart' as helpers;
 import 'package:ios_reminders/models/todo_list/todo_list.dart';
+import 'package:ios_reminders/services/database_service.dart';
 
 import 'package:provider/provider.dart';
 
@@ -33,34 +34,20 @@ class ViewListByCategoryScreen extends StatelessWidget {
               key: UniqueKey(),
               direction: DismissDirection.endToStart,
               background: DismissibleBackground(),
-              onDismissed: (direction) async {
+                  onDismissed: (direction) async {
                 final user = Provider.of<User?>(context, listen: false);
                 final todoLists =
                     Provider.of<List<TodoList>>(context, listen: false);
                 final todoListForReminder = todoLists.firstWhere(
                     (todoList) => todoList.id == reminder.list['id']);
-                WriteBatch batch = FirebaseFirestore.instance.batch();
-
-                final remindersRef = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user?.uid)
-                    .collection('reminders')
-                    .doc(reminder.id);
-
-                final listRef = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(user?.uid)
-                    .collection('todo_lists')
-                    .doc(reminder.list['id']);
-
-                batch.delete(remindersRef);
-                batch.update(listRef,
-                    {'reminder_count': todoListForReminder.reminderCount - 1});
 
                 try {
-                  await batch.commit();
+                  await DatabaseService(uid: user!.uid)
+                      .deleteReminder(reminder, todoListForReminder);
+                  helpers.showSnackBar(context, 'Reminder Deleted');
                 } catch (e) {
-                  print(e);
+                  //show the error
+                  helpers.showSnackBar(context, 'Unable to delete Reminder');
                 }
               },
               child: Card(

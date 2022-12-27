@@ -10,6 +10,8 @@ import 'package:ios_reminders/models/todo_list/todo_list.dart';
 import 'package:ios_reminders/screens/add_reminder/select_reminder_category_screen.dart';
 import 'package:ios_reminders/screens/add_reminder/select_reminder_list_screen.dart';
 import 'package:ios_reminders/services/database_service.dart';
+import 'package:ios_reminders/common/helpers/helpers.dart' as helpers;
+
 import 'package:provider/provider.dart';
 
 class AddReminderScreen extends StatefulWidget {
@@ -98,14 +100,16 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                             });
 
                         //access to the selected todoLists
-                        try {
-                          DatabaseService(uid: user!.uid)
-                              .addReminder(reminder: newReminder);
-                          Navigator.pop(context);
-                        } catch (e) {
-                          //show the error
-                        }
-                      },
+                     try {
+                      DatabaseService(uid: user!.uid)
+                          .addReminder(reminder: newReminder);
+                      Navigator.pop(context);
+                      helpers.showSnackBar(context, 'Reminder Added');
+                    } catch (e) {
+                      //show the error
+                      helpers.showSnackBar(context, 'Unable to add reminder');
+                    }
+                  },
             child: Text(
               'Add',
               style: TextStyle(
