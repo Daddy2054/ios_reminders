@@ -32,7 +32,7 @@ class Wrapper extends StatelessWidget {
             .toList());
     final remindersStream = FirebaseFirestore.instance
         .collection('users')
-        .doc(user?.uid)
+        .doc(user.uid)
         .collection('reminders')
         .snapshots()
         .map(
