@@ -80,7 +80,8 @@ class TodoLists extends StatelessWidget {
                                 .findIconById(todoLists[index].icon['id'])
                                 .icon)),
                         title: Text(todoLists[index].title),
-                        trailing: Text('0',
+                        trailing: Text(
+                            todoLists[index].reminderCount.toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyText2!
