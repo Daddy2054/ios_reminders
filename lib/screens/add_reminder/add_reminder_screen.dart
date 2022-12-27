@@ -71,7 +71,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
       appBar: AppBar(
         title: const Text('New Reminder'),
         actions: [
-           TextButton(
+          TextButton(
             onPressed: _title.isEmpty ||
                     _selectedDate == null ||
                     _selectedTime == null
@@ -94,6 +94,7 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
                         title: _titleTextController.text,
                         categoryId: _selectedCategory.id,
                         list: _selectedList!.toJson(),
+                        notes: _notesTextController.text,
                         dueDate: _selectedDate!.millisecondsSinceEpoch,
                         dueTime: {
                           'hour': _selectedTime!.hour,
@@ -128,218 +129,224 @@ class _AddReminderScreenState extends State<AddReminderScreen> {
           )
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).cardColor),
-              child: Column(
-                children: [
-                  TextField(
-                    textCapitalization: TextCapitalization.sentences,
-                    controller: _titleTextController,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Title',
-                    ),
-                  ),
-                  const Divider(
-                    height: 1,
-                  ),
-                  SizedBox(
-                    height: 100,
-                    child: TextField(
+      body: ListView(
+        children: [ 
+        Container(
+          //      constraints: BoxConstraints.tight(const Size(double.infinity, 350)),
+      
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).cardColor),
+                child: Column(
+                  children: [
+                    TextField(
                       textCapitalization: TextCapitalization.sentences,
-                      controller: _notesTextController,
+                      controller: _titleTextController,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
-                        hintText: 'Notes',
+                        hintText: 'Title',
                       ),
                     ),
+                    const Divider(
+                      height: 1,
+                    ),
+                    SizedBox(
+                      height: 100,
+                      child: TextField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: _notesTextController,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Notes',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Card(
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SelectReminderListScreen(
+                              todoLists: _todoLists,
+                              selectListCallback: _updateSelectedList,
+                              selectedList: _selectedList != null
+                                  ? _selectedList!
+                                  : _todoLists.first,
+                            ),
+                            fullscreenDialog: true,
+                          ));
+                    },
+                    leading: Text(
+                      'List',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CategoryIcon(
+                            bgColor: Colors.blueAccent,
+                            iconData: Icons.calendar_today),
+                        SizedBox(width: 10),
+                        Text(_selectedList != null
+                            ? _selectedList!.title
+                            : _todoLists.first.title),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
                   ),
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
+              const SizedBox(height: 20),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Card(
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SelectReminderListScreen(
-                            todoLists: _todoLists,
-                            selectListCallback: _updateSelectedList,
-                            selectedList: _selectedList != null
-                                ? _selectedList!
-                                : _todoLists.first,
-                          ),
-                          fullscreenDialog: true,
-                        ));
-                  },
-                  leading: Text(
-                    'List',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CategoryIcon(
-                          bgColor: Colors.blueAccent,
-                          iconData: Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(_selectedList != null
-                          ? _selectedList!.title
-                          : _todoLists.first.title),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
+                            builder: (context) => SelectReminderCategoryScreen(
+                                  selectedCategory: _selectedCategory,
+                                  selectCategoryCallback: _updateSelectedCategory,
+                                ),
+                            fullscreenDialog: true),
+                      );
+                    },
+                    leading: Text(
+                      'Category',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CategoryIcon(
+                            bgColor: _selectedCategory.icon.bgColor,
+                            iconData: _selectedCategory.icon.iconData),
+                        SizedBox(width: 10),
+                        Text(_selectedCategory.name),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SelectReminderCategoryScreen(
-                                selectedCategory: _selectedCategory,
-                                selectCategoryCallback: _updateSelectedCategory,
-                              ),
-                          fullscreenDialog: true),
-                    );
-                  },
-                  leading: Text(
-                    'Category',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CategoryIcon(
-                          bgColor: _selectedCategory.icon.bgColor,
-                          iconData: _selectedCategory.icon.iconData),
-                      SizedBox(width: 10),
-                      Text(_selectedCategory.name),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
+              const SizedBox(height: 20),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Card(
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () async {
+                      final DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime.now().add(
+                          Duration(days: 365),
+                        ),
+                      );
+                      if (pickedDate != null) {
+                        print(pickedDate);
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
+                      } else {
+                        print('no date was picked');
+                      }
+                    },
+                    leading: Text(
+                      'Date',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CategoryIcon(
+                            bgColor: Colors.red.shade300,
+                            iconData: Icons.calendar_today),
+                        SizedBox(width: 10),
+                        Text(_selectedDate != null
+                            ? DateFormat.yMMMd().format(_selectedDate!).toString()
+                            : 'Select Date'),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () async {
-                    final DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.now(),
-                      lastDate: DateTime.now().add(
-                        Duration(days: 365),
-                      ),
-                    );
-                    if (pickedDate != null) {
-                      print(pickedDate);
-                      setState(() {
-                        _selectedDate = pickedDate;
-                      });
-                    } else {
-                      print('no date was picked');
-                    }
-                  },
-                  leading: Text(
-                    'Date',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CategoryIcon(
-                          bgColor: Colors.red.shade300,
-                          iconData: Icons.calendar_today),
-                      SizedBox(width: 10),
-                      Text(_selectedDate != null
-                          ? DateFormat.yMMMd().format(_selectedDate!).toString()
-                          : 'Select Date'),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
+              const SizedBox(height: 20),
+              Container(
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Card(
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () async {
+                      final TimeOfDay? pickedTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (pickedTime != null) {
+                        print(pickedTime);
+                        setState(() {
+                          _selectedTime = pickedTime;
+                        });
+                      } else {
+                        print('no time was selected');
+                      }
+                    },
+                    leading: Text(
+                      'Time',
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CategoryIcon(
+                            bgColor: Colors.red.shade300, iconData: Icons.timer),
+                        SizedBox(width: 10),
+                        Text(_selectedTime != null
+                            ? _selectedTime!.format(context).toString()
+                            : 'Select Time'),
+                        Icon(Icons.arrow_forward_ios)
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              clipBehavior: Clip.antiAlias,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Card(
-                elevation: 0,
-                margin: EdgeInsets.zero,
-                child: ListTile(
-                  onTap: () async {
-                    final TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (pickedTime != null) {
-                      print(pickedTime);
-                      setState(() {
-                        _selectedTime = pickedTime;
-                      });
-                    } else {
-                      print('no time was selected');
-                    }
-                  },
-                  leading: Text(
-                    'Time',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      CategoryIcon(
-                          bgColor: Colors.red.shade300, iconData: Icons.timer),
-                      SizedBox(width: 10),
-                      Text(_selectedTime != null
-                          ? _selectedTime!.format(context).toString()
-                          : 'Select Time'),
-                      Icon(Icons.arrow_forward_ios)
-                    ],
-                  ),
-                ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
+        ]
       ),
     );
   }
