@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ios_reminders/models/reminder/reminder.dart';
 import 'package:ios_reminders/models/todo_list/todo_list.dart';
+import 'package:ios_reminders/services/database_service.dart';
 //import 'package:ios_reminders/models/todo_list/todo_list_collection.dart';
 import 'package:provider/provider.dart';
 
@@ -18,39 +19,22 @@ class Wrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final user = Provider.of<User?>(context);
 
-    final todoListStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user!.uid)
-        .collection('todo_lists')
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map(
-              (todoListSnapshot) => TodoList.fromJson(
-                todoListSnapshot.data(),
-              ),
-            )
-            .toList());
-    final remindersStream = FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .collection('reminders')
-        .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map(
-                (reminderSnapshot) => Reminder.fromJson(
-                  reminderSnapshot.data(),
-                ),
-              )
-              .toList(),
-        );
+  
+
+   
 
     return MultiProvider(
-      providers: [
+    providers: [
         StreamProvider<List<TodoList>>.value(
-            initialData: [], value: todoListStream),
+            initialData: [],
+            value: user != null
+                ? DatabaseService(uid: user.uid).todoListStream()
+                : null),
         StreamProvider<List<Reminder>>.value(
-            value: remindersStream, initialData: [])
+            value: user != null
+                ? DatabaseService(uid: user.uid).remindersStream()
+                : null,
+            initialData: [])
       ],
       child: MaterialApp(
         // initialRoute: '/',
